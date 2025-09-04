@@ -36,7 +36,7 @@ and evaluate it using the `eval_nirs` function.
 ```python
 from src.eval import eval_nirs
 
-df = ...  # Polars DataFrame of labeled network flows (see `Data` section for details) 
+df = ...  # Polars DataFrame of labeled network flows 
 
 eval_nirs(
     df = df,
@@ -59,10 +59,10 @@ pip install -r requirements.txt
 ```
 
 3) Run scripts as modules as specified in their description.
-For example, to run `experiments/ideal_nids.py`
+For example, to run `experiments/run_nirs.py`
 
 ```sh
-python -m experiments.ideal_nids
+python -m experiments.run_nirs --help
 ```
 
 #### Using uv
