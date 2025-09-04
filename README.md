@@ -88,7 +88,7 @@ The CSV file should be located at `data/nb15/nb15.csv`
 python -m src.run_nirs --dataset nb15 --nirs heuristic --nids ideal
 ```
 
-2) Run `OllamaNIRS` with ideal NIDS (*requires [Ollama](https://ollama.com/) to be installed and running on* [http://localhost:11434])
+2) Run `OllamaNIRS` with ideal NIDS (*requires [Ollama](https://ollama.com/) to be installed and running on* [http://localhost:11434](http://localhost:11434))
 
 ```sh
 python -m src.run_nirs --dataset nb15 --nirs ollama --nids ideal
