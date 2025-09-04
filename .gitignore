@@ -1,0 +1,20 @@
+# Results
+results/*
+
+# dotenv file
+.env
+
+# Pycache
+.venv/
+__pycache__/
+**/__pycache__/
+
+# uv
+.python-version
+uv.lock
+
+# coverage
+.coverage
+
+# VSCode/VSCodium
+.vscode/
