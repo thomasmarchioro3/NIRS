@@ -3,7 +3,16 @@
 This code allows to evaluate Network Intrusion Response Systems based on iptables rules.
 A Network Intrusion Response Systems (NIRS) uses alerts from Network Intrusion Detection
 Systems (NIDS) to dynamically generate firewall rules. 
-More details can be found in the paper.
+
+
+## Reproducing paper results
+
+As this is a living repository, we create separate branches to have permanent code snapshots for each paper.
+
+- ANUBIS 2025 paper: [Network Intrusion Response Systems: Towards standardized evaluation of intrusion response](https://hal.science/hal-05294762v1). Code: [link](https://github.com/thomasmarchioro3/NIRS/tree/anubis2025)
+
+- WAITI 2025 paper: AgentNIRS: An LLM-Driven Agent for Network Intrusion Response. Code: [link](https://github.com/thomasmarchioro3/NIRS/tree/waiti2025)
+
 
 ## Create and evaluate a custom NIRS
 
@@ -71,68 +80,6 @@ python -m experiments.run_nirs --help
 uv sync
 ```
 
-## Reproduce the paper's results
-
-#### Download the NB15 dataset
-
-The dataset is available [here](https://research.unsw.edu.au/projects/unsw-nb15-dataset)
-
-Download `UNSW-NB15_1.csv`,...,`UNSW-NB15_4.csv` and merge them into a single file `nb15.csv`.
-The CSV file should be located at `data/nb15/nb15.csv`
-
-#### Run NIRS with ideal NIDS (perfect NIDS predictions)
-
-1) Run `HeuristicNIRS` with ideal NIDS
-
-```sh
-python -m src.run_nirs --dataset nb15 --nirs heuristic --nids ideal
-```
-
-2) Run `OllamaNIRS` with ideal NIDS (*requires [Ollama](https://ollama.com/) to be installed and running on* [http://localhost:11434](http://localhost:11434))
-
-```sh
-python -m src.run_nirs --dataset nb15 --nirs ollama --nids ideal
-```
-
-#### Run NIRS with real NIDS (random forest classifier)
-
-1) Obtain predictions using NIDS random forest.
-
-```sh
-python -m src.run_nids --dataset nb15 --fpr 1e-1 --seed 1
-```
-Repeat for seeds 1 to 5.
-
-2) Run the NIRS evaluation script for `HeuristicNIRS` 
-
-```sh
-python -m src.run_nirs --dataset nb15 --fpr 1e-1 --nirs heuristic --nids ideal
-```
-and `OllamaNIRS`
-```sh
-python -m src.run_nirs --dataset nb15 --fpr 1e-1 --nirs heuristic --nids ideal
-```
-Repeat for seeds 1 ro 5 and for fpr 1e-4, 1e-3, 1e-2, 1e-1.
-
-Your `results` directory should look as follows.
-
-```sh
-├── results
-│   ├── rf_nb15_tpr_vs_fpr.csv
-│   └── temp
-│       ├── nids
-│       │   ├── rf_nb15_seed1_pred.csv
-│       │   ├── rf_nb15_seed2_pred.csv
-│       │   ├── rf_nb15_seed3_pred.csv
-│       │   ├── rf_nb15_seed4_pred.csv
-│       │   └── rf_nb15_seed5_pred.csv
-│       ├── rf_nids_nb15_heuristicnirs_fpr0_1_update_1800000_seed1.csv
-│       ├── rf_nids_nb15_heuristicnirs_fpr0_1_update_1800000_seed2.csv
-│       ├── rf_nids_nb15_heuristicnirs_fpr0_1_update_1800000_seed3.csv
-│       ├── rf_nids_nb15_heuristicnirs_fpr0_1_update_1800000_seed4.csv
-│       └── rf_nids_nb15_heuristicnirs_fpr0_1_update_1800000_seed5.csv
-...
-```
 
 ## Cite this project
 
