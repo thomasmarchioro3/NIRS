@@ -19,21 +19,23 @@ As this is a living repository, we create separate branches to have permanent co
 Create a NIRS class by extending the BaseNIRS class:
 
 ```python
-from src.nirs import BaseNIRS
+import numpy as np
+import polars as pl
+from nirs import BaseNIRS
 
 class MyNIRS(BaseNIRS):
 
     def __init__(self, ...) -> None:
         # implement constructor
 
-    def apply_rules(self, df: pl.DataFrame) -> np.ndarray:
+    def apply_rules(self, X: pl.DataFrame) -> np.ndarray:
         # implement the logic for applying firewall rules to network flows
         # to a DataFrame of network flows (this function should return the
         # indexes of the blocked flows)
         idx_blocked = ...
         return idx_blocked
 
-    def update(self, df: pl.DataFrame) -> None
+    def update(self, df: pl.DataFrame) -> None:
         # implement your logic for ingesting a DataFrame of network flows
         # and updating the firewall rules
 
@@ -43,7 +45,7 @@ my_nirs = MyNIRS(...)
 and evaluate it using the `eval_nirs` function.
 
 ```python
-from src.eval import eval_nirs
+from nirs.eval import eval_nirs
 
 df = ...  # Polars DataFrame of labeled network flows 
 
@@ -76,10 +78,24 @@ python -m experiments.run_nirs --help
 
 #### Using uv
 
+1) Install [uv](https://github.com/astral-sh/uv)
+
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+2) Install dependencies
+
 ```sh
 uv sync
 ```
 
+3) Run scripts as modules (replace `python` with `uv run`)
+For example, to run `experiments/run_nirs.py`
+
+```sh
+uv run -m experiments.run_nirs --help
+```
 
 ## Cite this project
 
