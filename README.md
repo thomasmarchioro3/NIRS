@@ -3,28 +3,30 @@
 This code allows to evaluate Network Intrusion Response Systems based on iptables rules.
 A Network Intrusion Response Systems (NIRS) uses alerts from Network Intrusion Detection
 Systems (NIDS) to dynamically generate firewall rules. 
-More details can be found in the paper.
+More details can be found in the [paper](https://hal.science/hal-05294762v1/file/ESORICS_2025_paper_756.pdf).
 
 ## Create and evaluate a custom NIRS
 
 Create a NIRS class by extending the BaseNIRS class:
 
 ```python
-from src.nirs import BaseNIRS
+import numpy as np
+import polars as pl
+from nirs import BaseNIRS
 
 class MyNIRS(BaseNIRS):
 
     def __init__(self, ...) -> None:
         # implement constructor
 
-    def apply_rules(self, df: pl.DataFrame) -> np.ndarray:
+    def apply_rules(self, X: pl.DataFrame) -> np.ndarray:
         # implement the logic for applying firewall rules to network flows
         # to a DataFrame of network flows (this function should return the
         # indexes of the blocked flows)
         idx_blocked = ...
         return idx_blocked
 
-    def update(self, df: pl.DataFrame) -> None
+    def update(self, df: pl.DataFrame) -> None:
         # implement your logic for ingesting a DataFrame of network flows
         # and updating the firewall rules
 
@@ -34,7 +36,7 @@ my_nirs = MyNIRS(...)
 and evaluate it using the `eval_nirs` function.
 
 ```python
-from src.eval import eval_nirs
+from nirs.eval import eval_nirs
 
 df = ...  # Polars DataFrame of labeled network flows 
 
@@ -47,6 +49,8 @@ eval_nirs(
 ```
 
 ## Run the code
+
+The code can be run using either a virtual/conda environment or uv (recommended).
 
 #### Using a Python virtual environment or Conda environment
 
@@ -67,8 +71,23 @@ python -m experiments.run_nirs --help
 
 #### Using uv
 
+1) Install [uv](https://github.com/astral-sh/uv)
+
+```sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+2) Install dependencies
+
 ```sh
 uv sync
+```
+
+3) Run scripts as modules (replace `python` with `uv run`)
+For example, to run `experiments/run_nirs.py`
+
+```sh
+uv run -m experiments.run_nirs --help
 ```
 
 ## Reproduce the paper's results
@@ -78,6 +97,11 @@ uv sync
 The dataset is available [here](https://research.unsw.edu.au/projects/unsw-nb15-dataset)
 
 Download `UNSW-NB15_1.csv`,...,`UNSW-NB15_4.csv` and merge them into a single file `nb15.csv`.
+
+```sh
+python -m data.nb15.merge_files
+```
+
 The CSV file should be located at `data/nb15/nb15.csv`
 
 #### Run NIRS with ideal NIDS (perfect NIDS predictions)
@@ -85,13 +109,13 @@ The CSV file should be located at `data/nb15/nb15.csv`
 1) Run `HeuristicNIRS` with ideal NIDS
 
 ```sh
-python -m src.run_nirs --dataset nb15 --nirs heuristic --nids ideal
+python -m experiments.run_nirs --dataset nb15 --nirs heuristic --nids ideal
 ```
 
 2) Run `OllamaNIRS` with ideal NIDS (*requires [Ollama](https://ollama.com/) to be installed and running on* [http://localhost:11434](http://localhost:11434))
 
 ```sh
-python -m src.run_nirs --dataset nb15 --nirs ollama --nids ideal
+python -m experiments.run_nirs --dataset nb15 --nirs ollama --nids ideal
 ```
 
 #### Run NIRS with real NIDS (random forest classifier)
@@ -99,18 +123,18 @@ python -m src.run_nirs --dataset nb15 --nirs ollama --nids ideal
 1) Obtain predictions using NIDS random forest.
 
 ```sh
-python -m src.run_nids --dataset nb15 --fpr 1e-1 --seed 1
+python -m nids.run_nids --dataset nb15 --fpr 1e-1 --seed 1
 ```
 Repeat for seeds 1 to 5.
 
 2) Run the NIRS evaluation script for `HeuristicNIRS` 
 
 ```sh
-python -m src.run_nirs --dataset nb15 --fpr 1e-1 --nirs heuristic --nids ideal
+python -m experiments.run_nirs --dataset nb15 --fpr 1e-1 --nirs heuristic --nids rf --seed 1
 ```
 and `OllamaNIRS`
 ```sh
-python -m src.run_nirs --dataset nb15 --fpr 1e-1 --nirs heuristic --nids ideal
+python -m experiments.run_nirs --dataset nb15 --fpr 1e-1 --nirs heuristic --nids rf --seed 1
 ```
 Repeat for seeds 1 ro 5 and for fpr 1e-4, 1e-3, 1e-2, 1e-1.
 

@@ -141,19 +141,19 @@ if __name__ == "__main__":
 
     tic = time.perf_counter()
    
-    if args.nids != "ideal":
+    df = load_dataset(dataset_name)
+    print(df.head())
+
+    if args.nids == "ideal":
+        nirs = NIRS_Factory()
+        res_df = eval_nirs_ideal(df, nirs, update_time_ms, seed)
+    else:
         nids_pred = pl.read_csv(
             f"results/temp/nids/{args.nids}_{args.dataset}_seed{args.seed}_pred.csv"
         )["pred"]
-
-        df = load_dataset(dataset_name)
         nirs = NIRS_Factory()
         res_df = eval_nirs_real(df, nirs, nids_pred, fpr, update_time_ms, seed)
-    else:
-        df = load_dataset(dataset_name)
-        nirs = NIRS_Factory()
-        res_df = eval_nirs_ideal(df, nirs, update_time_ms, seed)
-    
+
     toc = time.perf_counter()
     print(f"Time: {toc - tic}")
 
@@ -175,3 +175,15 @@ if __name__ == "__main__":
     outfile = os.path.join(outdir, outfile)
 
     res_df.write_csv(outfile)
+    print(f"Results saved to {outfile}")
+
+    res_df = res_df.with_columns(
+        df["label"],
+        pl.col("is_blocked"),
+    )
+
+    cbr = res_df.filter(pl.col("label") == 1)["is_blocked"].mean()
+    wbr = res_df.filter(pl.col("label") == 0)["is_blocked"].mean()
+
+    print(f"CBR: {cbr}")
+    print(f"WBR: {wbr}")
