@@ -114,6 +114,11 @@ python -m experiments.run_nirs --dataset nb15 --nirs heuristic --nids ideal
 
 2) Run `OllamaNIRS` with ideal NIDS (*requires [Ollama](https://ollama.com/) to be installed and running on* [http://localhost:11434](http://localhost:11434))
 
+
+```sh
+ollama pull llama3:8b  # ID: 365c0bd3c000
+```
+
 ```sh
 python -m experiments.run_nirs --dataset nb15 --nirs ollama --nids ideal
 ```
@@ -134,7 +139,7 @@ python -m experiments.run_nirs --dataset nb15 --fpr 1e-1 --nirs heuristic --nids
 ```
 and `OllamaNIRS`
 ```sh
-python -m experiments.run_nirs --dataset nb15 --fpr 1e-1 --nirs heuristic --nids rf --seed 1
+python -m experiments.run_nirs --dataset nb15 --fpr 1e-1 --nirs ollama --nids rf --seed 1
 ```
 Repeat for seeds 1 ro 5 and for fpr 1e-4, 1e-3, 1e-2, 1e-1.
 
