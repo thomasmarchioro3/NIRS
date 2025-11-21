@@ -12,3 +12,4 @@ program. If not, see <https://creativecommons.org/licenses/by-nc-sa/4.0/>.
 from .nirs.base import BaseNIRS, WindowNIRS
 from .nirs.heuristic import HeuristicNIRS
 from .nirs.llm import OllamaNIRS
+from .nirs.agent import AgentNIRS

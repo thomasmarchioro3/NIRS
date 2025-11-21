@@ -27,7 +27,8 @@ sys.path.append(parent_dir)
 
 from nirs.eval import eval_nirs
 from nirs.datasets import load_dataset
-from nirs import WindowNIRS, HeuristicNIRS, OllamaNIRS
+from nirs import WindowNIRS, HeuristicNIRS, OllamaNIRS, AgentNIRS
+
 from nids.utils import apply_quantile_threshold
 
 from nirs.parse_args import get_args, get_resfile_name
@@ -96,6 +97,11 @@ if __name__ == "__main__":
     max_rules = 10
     update_time_ms = args.update_time_ms
 
+    llm_model = args.llm_model
+    target_cbr = args.target_cbr
+    target_wbr = args.target_wbr
+    max_attempts = args.max_attempts
+
     dataset_name = args.dataset
     nirs_name = args.nirs
 
@@ -136,11 +142,26 @@ if __name__ == "__main__":
                 num_examples_prompt=args.k_prompt,
             )
 
+        case "agent":
+            NIRS_Factory = lambda: AgentNIRS(
+                max_alert_window_idle_ms=max_alert_window_idle_ms,
+                max_alert_window_len_ms=max_alert_window_len_ms,
+                benign_traffic_window_len_ms=benign_traffic_window_len_ms,
+                df=df,
+                max_rules=max_rules,
+                model=llm_model,
+                target_cbr=target_cbr,
+                target_wbr=target_wbr,
+            )
+
         case _:
             raise NotImplementedError
 
     tic = time.perf_counter()
-   
+  
+    if not os.path.isdir("results"):
+        os.makedirs("results")
+
     if args.nids != "ideal":
         nids_pred = pl.read_csv(
             f"results/temp/nids/{args.nids}_{args.dataset}_seed{args.seed}_pred.csv"
@@ -169,7 +190,11 @@ if __name__ == "__main__":
         args.eps, 
         args.k_prompt, 
         seed, 
-        update_time_ms
+        update_time_ms,
+        llm_model,
+        target_cbr,
+        target_wbr,
+        max_attempts,
     )
 
     outfile = os.path.join(outdir, outfile)
