@@ -4,6 +4,8 @@ This code allows to evaluate Network Intrusion Response Systems based on iptable
 A Network Intrusion Response Systems (NIRS) uses alerts from Network Intrusion Detection
 Systems (NIDS) to dynamically generate firewall rules. 
 
+![](./figures/fig/nirs.png)
+
 
 ## Reproducing paper results
 
@@ -99,7 +101,7 @@ uv run -m experiments.run_nirs --help
 
 ## Cite this project
 
-```
+```bibtex
 @inproceedings{marchioro2025network,
   title={Network Intrusion Response Systems: Towards standardized evaluation of intrusion response},
   author={Marchioro, Thomas and Saroui, Rachida and Olivereau, Alexis},
