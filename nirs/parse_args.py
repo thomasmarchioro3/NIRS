@@ -35,7 +35,7 @@ def get_args():
         "--nirs",
         type=str,
         default="heuristic",
-        help="NIRS to be used for the experiment. Options: base, heuristic, ollama.",
+        help="NIRS to be used for the experiment. Options: base, heuristic, ollama, agent.",
     )
     parser.add_argument("--fpr", type=float, default=0.1, help="False positive rate.")
 
@@ -50,7 +50,7 @@ def get_args():
         "--k_prompt",
         type=int,
         default=10,
-        help="Max number of examples from alert and benign window (2*k_prompt examples in total). Used only for OllamaNIRS. Default: 10.",
+        help="Max number of examples from alert and benign window (2*k_prompt examples in total). Used only for OllamaNIRS and AgentNIRS. Default: 10.",
     )
 
     parser.add_argument(

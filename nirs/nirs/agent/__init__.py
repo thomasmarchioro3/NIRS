@@ -158,7 +158,7 @@ class AgentNIRS(WindowNIRS):
         start_time = int(time.time() // 1)
 
         safe_model = self.model.replace(".", "_").replace(":", "_")
-        self.time_file = f"results/time_{safe_model}_{start_time}.csv"
+        self.time_file = f"results/temp/time_{safe_model}_{start_time}.csv"
         print(self.time_file)
 
         with open(self.time_file, "w") as f:
